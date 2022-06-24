@@ -1,15 +1,15 @@
 import { Badge, Button, Card, Col, Row } from "react-bootstrap"
 // import ActionButtons from "./ActionButtons"
 import trashIcon from '../assets/trash.svg'
-const SinglePost = ({ post:{title,random, index}, deleteMess}) => {
+const SinglePost = ({ post:{title, status,description,index},deleteMess}) => {
     // const deleteMess = (index)
     return (
         <Card
-            // border={
-            //     status === 'LEARNED' ? 'success' :
-            //         status === 'LEARNING' ? 'warning' : 'danger'
-            // }
-            border="success"
+            border={
+                status === 'DONE' ? 'success' :
+                    status === 'DOING' ? 'warning' : 'danger'
+            }
+            // border="success"
             className='shadow'
         >
             <Card.Body>
@@ -20,26 +20,24 @@ const SinglePost = ({ post:{title,random, index}, deleteMess}) => {
                         
                         <Badge
                             pill
-                            variant="success"
-                            // variant={
-							// 	status === 'LEARNED'
-							// 		? 'success'
-							// 		: status === 'LEARNING'
-							// 		? 'warning'
-							// 		: 'danger'
-							// }
+                            variant={
+								status === 'DONE'
+									? 'success'
+									: status === 'DOING'
+									? 'warning'
+									: 'danger'
+							}
                         >
-                            {/* {status} */}
+                            {status}
                         </Badge>
                     </Col>
                     <Col>
-                        {/* <ActionButtons url={url} _id={_id} /> */}
                         <Button className="post-button" 
                         onClick={()=>deleteMess(index)}><img src={trashIcon} alt="trash-icon" width="32" height="32"/></Button>
                     </Col>
                 </Row>
                 </Card.Title>
-                <Card.Text>{random}</Card.Text>
+                <Card.Text>{description}</Card.Text>
             </Card.Body>
         </Card>
     )

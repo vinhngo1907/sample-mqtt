@@ -7,14 +7,14 @@ import NavbarMenu from "./components/NavbarMenu";
 function App() {
 
 	return (
-		<Router>
-			<NavbarMenu />
-			<Switch>
-				<Route exact path="/" component={Dashboard} />
-				<Route exact path="/about" component={About} />
+			<Router>
+				<NavbarMenu />
+				<Switch>
+					<Route exact path="/" component={Dashboard} />
+					<Route exact path="/about" component={About} />
 
-			</Switch>
-		</Router>
+				</Switch>
+			</Router>
 	);
 }
 

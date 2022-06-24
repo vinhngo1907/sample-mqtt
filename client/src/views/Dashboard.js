@@ -1,30 +1,47 @@
-import { useEffect, useState } from "react"
+import React,{  useEffect, useState } from "react"
 import { Col, Row } from "react-bootstrap"
-import mqtt from "precompiled-mqtt";
-import SinglePost from '../components/SinglePost'
+// import mqtt from "precompiled-mqtt";
+import SinglePost from '../components/SinglePost';
+import io from 'socket.io-client';
 const Dashboard = () => {
     const [messages, setMessages] = useState([]);
-    const client = mqtt.connect('ws://broker.hivemq.com:8000/mqtt')
-    useEffect(() => {
+    // const client = mqtt.connect('ws://broker.hivemq.com:8000/mqtt')
+    const socket = io('http://localhost:3001');
+    
+    //join Socket   
+    useEffect(()=>{
+        socket.emit('joinSocket',{topic:"sensor/update"})
+    },[])
+    
+    useEffect(()=>{
+        socket.on('mqttData',function(newMess){
+            setMessages([...messages, newMess])
+        })
+        return () => socket.off('mqttData')
+    },[socket,messages])
+
+      /**
+    useEffect(() => {        
         client.on('connect', function () {
             console.log("Client subscribed ");
-            client.subscribe('publish/connected', function (err) {
+            client.subscribe('sensor/update', function (err) {
                 if (err) console.log(err)
             })
-            client.subscribe('publish/state')
         })
-
+    }, [client]);
+    
+    useEffect(() => {
         client.on('message', function (topic, message) {
             console.log(message.toString())
-            setMessages([...messages, { title: topic, random: message.toString() }])
-
+            setMessages([...messages, JSON.parse(message.toString())])
         })
         return () => client.end()
-    }, [client, messages])
-    const deleteMess = (index = '') => {
+    },[client,messages]);*/
+
+    const deleteMess = (index='')=>{
         const newArr = [...messages];
-        newArr.splice(index, 1);
-        setMessages(newArr);
+        newArr.splice(index,1);
+        setMessages(newArr)
     }
     let body
     body = (
