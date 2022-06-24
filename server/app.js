@@ -43,22 +43,29 @@ const client = mqtt.connect('mqtt://broker.mqttdashboard.com');
 io.on("connection", (socket) => {
     socket.on("joinSocket", (data) => {
         // users.push({ client: data, socketId: socket.id })
+        socket.join(data.topic);
         console.log(`User with ID: ${socket.id} joined with topic: ${data.topic}`);
         client.subscribe(data.topic);
     })
-    client.on("message", function(topic, message) {
-        if (topic === "sensor/update") {
-            let newMess = JSON.parse(message.toString());
-            console.log(newMess)
-            socket.emit("mqttData", newMess);
 
-            // socket.emit("sensor/updateToClient", newMess)
-            // io.emit("sensor/updateToClient", newMess);
-            // socket.broadcast.emit("sensor/updateToClient", newMess)
-            // socket.to(`Socket ${socket.id}`).emit("sensor/updateToClient", newMess)
-        }
-        client.end();
-    })
+    client.addListener('message', function(topic, payload) {
+        // sys.puts(topic+'='+payload);
+        console.log(payload.toString())
+        io.sockets.in(topic).emit('mqttData', JSON.parse(payload.toString()));
+    });
+    // client.on("message", function(topic, message) {
+    //     console.log(topic)
+    //     if (topic === "sensor/update") {
+    //         let newMess = JSON.parse(message.toString());
+    //         console.log(newMess)
+    //             // socket.emit("mqttData", newMess)
+    //             // socket.emit("sensor/updateToClient", newMess)
+    //             // io.emit("sensor/updateToClient", newMess);
+    //             // socket.broadcast.emit("sensor/updateToClient", newMess)
+    //             // socket.to(`Socket ${socket.id}`).emit("sensor/updateToClient", newMess)
+    //         client.end();
+    //     }
+    // })
     socket.on("disconnect", () => {
         console.log("User Disconnected", socket.id);
     })

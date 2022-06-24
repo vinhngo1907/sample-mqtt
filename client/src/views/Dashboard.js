@@ -11,7 +11,8 @@ const Dashboard = () => {
     //join Socket   
     useEffect(()=>{
         socket.emit('joinSocket',{topic:"sensor/update"})
-    },[])
+        return ()=>socket.close();
+    },[socket])
     
     useEffect(()=>{
         socket.on('mqttData',function(newMess){
